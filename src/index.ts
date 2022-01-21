@@ -16,7 +16,7 @@ document.getElementById('encode').addEventListener('click', () =>{
         const privateKeyPath = (document.getElementById('privateKey') as HTMLInputElement).files[0].path
         let uploadFilePath = (document.getElementById('uploadFile') as HTMLInputElement).files[0].path
         const unProofDirPath = (document.getElementById('unProofDir') as HTMLInputElement).value
-        const uploadFileName = osDir(uploadFilePath)
+        const uploadFileName = getFileNameWithOS(uploadFilePath)
         if(!duplicateFileValidate(unProofDirPath, uploadFileName)){
             return
         }
@@ -83,14 +83,14 @@ function reset(){
     (document.getElementById('uploadFile') as HTMLInputElement).value = null;
 }
 
-function osDir(path: string){
+function getFileNameWithOS(path: string){
     const osPlatform = os.platform();
     if(osPlatform === 'win32'){
-        return path.split(`\\\\`).pop();
+        return path.split(`\\`).pop();
     }
     else if(osPlatform === 'linux'){
         return path.split(`/`).pop();
     }else{
-        return path
+        return path.split(`/`).pop();
     }
 }
