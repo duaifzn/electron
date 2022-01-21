@@ -6,6 +6,7 @@ import { IpcChannel } from './dto/ipcDto';
 import { FilenameExtension } from './dto/filenameExtension'
 import { logger } from './service/logger'
 import { performance } from 'perf_hooks';
+import * as os from 'os';
 
 document.getElementById('encode').addEventListener('click', () =>{
     try{
@@ -15,7 +16,7 @@ document.getElementById('encode').addEventListener('click', () =>{
         const privateKeyPath = (document.getElementById('privateKey') as HTMLInputElement).files[0].path
         let uploadFilePath = (document.getElementById('uploadFile') as HTMLInputElement).files[0].path
         const unProofDirPath = (document.getElementById('unProofDir') as HTMLInputElement).value
-        const uploadFileName = uploadFilePath.split('/').pop();
+        const uploadFileName = osDir(uploadFilePath)
         if(!duplicateFileValidate(unProofDirPath, uploadFileName)){
             return
         }
@@ -80,4 +81,16 @@ function duplicateFileValidate(dir: string, fileName: string){
 
 function reset(){
     (document.getElementById('uploadFile') as HTMLInputElement).value = null;
+}
+
+function osDir(path: string){
+    const osPlatform = os.platform();
+    if(osPlatform === 'win32'){
+        return path.split(`\\\\`).pop();
+    }
+    else if(osPlatform === 'linux'){
+        return path.split(`/`).pop();
+    }else{
+        return path
+    }
 }
