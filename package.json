@@ -10,6 +10,7 @@
     "app:dist": "npm run build && electron-builder"
   },
   "keywords": [],
+  "homepage": "https://github.com/owner/project#readme",
   "author": "duaifzn <duaifzn@gmail.com>",
   "license": "ISC",
   "dependencies": {
