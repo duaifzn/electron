@@ -1,0 +1,6 @@
+node_modules
+ca_bundle.crt
+certificate.crt
+dist/
+private.key
+build/
