@@ -1,7 +1,7 @@
 import { Result } from 'types';
 import * as crypto from 'crypto';
 import * as asn1 from 'asn1';
-import { Pem } from './type'
+import { Pem } from './type';
 
 export function sign(skey: Pem, data: Buffer): Buffer {
     const signObj = crypto.createSign('sha256');

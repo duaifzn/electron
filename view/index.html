@@ -4,35 +4,36 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>iii</title>
+    <link rel="stylesheet" href="./style.css">
 </head>
 <body>
     <div>
-        <h1>File Upload</h1>
-        <div class="col">
-            <span>未存證資料夾:</span>
+        <h1>存證加密</h1>
+        <div class="row">
+            <span>指定未存證資料夾:</span>
             <div class="unProofDir">
                 <input type="text" id="unProofDir" name="unProofDir" disabled>
                 <button id="unProofDirBtn">選擇</button>
             </div>
         </div>
 
-        <div class="col">
+        <!-- <div class="row">
             <span>已存證資料夾:</span>
             <div class="proofedDir">
                 <input type="text" id="proofedDir" name="proofedDir" disabled>
                 <button id="proofedDirBtn">選擇</button>
             </div>
-        </div>
+        </div> -->
 
-        <div class="col">
+        <div class="row">
             <span>私鑰:</span>
             <div class="privateKey">
                 <input type="file" id="privateKey" name="privateKey" multiple>
             </div>
         </div>
 
-        <div class="col">
+        <div class="row">
             <span>上傳檔案: </span>
             <div class="uploadFile">
                 <input type="file" id="uploadFile" name="uploadFile" multiple>
@@ -40,7 +41,7 @@
         </div>
 
         <div>
-            <button type="submit" id="encode">加密</button>
+            <button type="button" id="encode">加密</button>
         </div>
     </div>
     <script>

@@ -14,14 +14,14 @@ class Main {
     }
     private createWindow(){
         this.mainWindow = new BrowserWindow({
-            width: 1000,
+            width: 500,
             height: 400,
             webPreferences: {
                 nodeIntegration: true,
                 contextIsolation: false,
             }
         })
-        this.mainWindow.webContents.openDevTools();
+        //this.mainWindow.webContents.openDevTools();
         this.mainWindow.loadFile(path.resolve(__dirname, "../view/index.html"))
     }
     private onActivate(){

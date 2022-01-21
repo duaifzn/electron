@@ -3,3 +3,4 @@ ca_bundle.crt
 certificate.crt
 dist/
 private.key
+build/
