@@ -28,7 +28,11 @@ document.getElementById('encode').addEventListener('click', () =>{
         const endTime = performance.now()
         logger.info(`Encode ${uploadFileName} spend ${endTime - startTime} milliseconds.`)
         //---------------------------------
-        appendFileSync(`${unProofDirPath}/${uploadFileName}${FilenameExtension.unProof}`, JSON.stringify({sign: `${sign}`} as unProofDto))
+        const unProofData: unProofDto = {
+            sign: `${sign}`,
+            spendTime: `${endTime - startTime}`
+        }
+        appendFileSync(`${unProofDirPath}/${uploadFileName}${FilenameExtension.unProof}`, JSON.stringify(unProofData))
         reset()
     }catch(err){
         logger.error(`${err}`)

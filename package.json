@@ -36,14 +36,10 @@
     "directories": {
       "output": "build"
     },
-    "mac": {
-
-    },
-    "win": {
-
-    },
+    "mac": {},
+    "win": {},
     "linux": {
-      "target": "deb"
+      "target": ["AppImage"]
     }
   },
   "postinstall": "electron-builder install-app-deps"
