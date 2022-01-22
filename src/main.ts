@@ -1,8 +1,7 @@
-import { app, BrowserWindow, ipcMain, dialog } from 'electron'
+import { app, BrowserWindow, ipcMain } from 'electron'
 import * as path from 'path'
 import { IpcChannel } from './dto/ipcDto'
 import { selectDir } from './service/ipcMainOnService'
-
 class Main {
     private mainWindow: BrowserWindow
 

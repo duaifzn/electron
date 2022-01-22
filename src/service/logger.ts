@@ -1,5 +1,9 @@
 import * as winston from 'winston';
-
+import { existsSync, mkdirSync } from 'fs';
+const logPath = 'log'
+if(!existsSync(logPath)){
+  mkdirSync(logPath)
+}
 export const logger = winston.createLogger({
   level: 'info',
   format: winston.format.combine(
@@ -8,7 +12,7 @@ export const logger = winston.createLogger({
   ),
   transports: [
     new winston.transports.Console(),
-    new winston.transports.File({ filename: 'error.log', level: 'error' }),
-    new winston.transports.File({ filename: 'info.log', level: 'info' }),
+    new winston.transports.File({ filename: `${logPath}/error.log`, level: 'error' }),
+    new winston.transports.File({ filename: `${logPath}/info.log`, level: 'info' }),
   ],
 });
