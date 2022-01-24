@@ -7,7 +7,8 @@ import { FilenameExtension } from './dto/filenameExtension'
 import { logger } from './service/logger'
 import { performance } from 'perf_hooks';
 import * as os from 'os';
-
+import Swal from 'sweetalert2';
+  
 document.getElementById('encode').addEventListener('click', () =>{
     try{
         if(!inputValidate()){
@@ -34,9 +35,10 @@ document.getElementById('encode').addEventListener('click', () =>{
         }
         appendFileSync(`${unProofDirPath}/${uploadFileName}${FilenameExtension.unProof}`, JSON.stringify(unProofData))
         reset()
+        sweetAlertSuccess(`檔案簽章成功!!`)
     }catch(err){
         logger.error(`${err}`)
-        alert(`${err}`)
+        sweetAlertError(`${err}`)
     }
 })
 
@@ -71,15 +73,15 @@ document.getElementById('privateKey').addEventListener('change', () =>{
 
 function inputValidate(): Boolean{
     if(!(document.getElementById('privateKey') as HTMLInputElement).files[0]){
-        alert('缺少私鑰!!')
+        sweetAlertError('缺少私鑰!!')
         return false
     }
     if(!(document.getElementById('uploadFile') as HTMLInputElement).files[0]){
-        alert('缺少上傳檔案!!')
+        sweetAlertError('缺少上傳檔案!!')
         return false
     }
     if(!(document.getElementById('unProofDir') as HTMLInputElement).value){
-        alert('請輸入未存證資料夾!!')
+        sweetAlertError('請輸入未存證資料夾!!')
         return false
     }
     // if(!(document.getElementById('proofedDir') as HTMLInputElement).value){
@@ -92,7 +94,7 @@ function inputValidate(): Boolean{
 function duplicateFileValidate(dir: string, fileName: string){
     const files = readdirSync(dir)
     if(files.includes(`${fileName}${FilenameExtension.unProof}`)){
-        alert('上傳檔案名稱重複!!')
+        sweetAlertError('上傳檔案名稱重複!!')
         return false
     }
     return true
@@ -112,4 +114,33 @@ function getFileNameWithOS(path: string){
     }else{
         return path.split(`/`).pop();
     }
+}
+
+function sweetAlertError(msg: string){
+    Swal.fire({
+        title: '錯誤',
+        text: msg,
+        icon: 'error',
+        confirmButtonText: '確定',
+        confirmButtonColor: '#0d6efd',
+    })
+}
+
+function sweetAlertSuccess(msg: string){
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener('mouseenter', Swal.stopTimer)
+          toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    })
+
+    Toast.fire({
+        icon: 'success',
+        title: msg
+      })
 }
