@@ -1,0 +1,53 @@
+body{
+    height: 575px;
+}
+.content{
+    height: 100%;
+    width: 100%;
+}
+#encode{
+    width: 100px;
+}
+label{
+    font-size: xx-large;
+    font-weight:600;
+}
+
+ul {
+    list-style-type: none;
+}
+li, h2{
+    color:white;
+}
+li{
+    padding: 5px 10px;
+    width: 80%;
+}
+li:hover{
+    background-color: rgb(255, 255, 255, 0.5);
+    border-radius: 10px;
+    cursor: pointer;
+}
+.select-active {
+    background-color: rgb(255, 255, 255, 0.5);
+    border-style: solid;
+    border-width: 2px;
+    border-color: white;
+    border-radius: 10px;
+}
+.tick{
+    color:green;
+}
+.title{
+    margin-left: 20px;
+}
+.icon-left{
+    margin-left: 16px;
+}
+.navbar-custom{
+    background-color: black;
+    height: 100%;
+}
+.hidden{
+    display: none;
+}

@@ -42,9 +42,24 @@ document.getElementById('encode').addEventListener('click', () =>{
 
 document.getElementById('unProofDirBtn').addEventListener('click', () =>{
     ipcRenderer.on(IpcChannel.selectDir, (event, arg) =>{
+        if(arg.length !== 0){
+            document.getElementById('setting-folder').firstElementChild.classList.add('tick')
+        }
+        else{
+            document.getElementById('setting-folder').firstElementChild.classList.remove('tick')
+        }
         (document.getElementById('unProofDir') as HTMLInputElement).value = arg
     })
     ipcRenderer.send(IpcChannel.selectDir)
+})
+
+document.getElementById('privateKey').addEventListener('change', () =>{
+    if((document.getElementById('privateKey') as HTMLInputElement).value){
+        document.getElementById('setting-privatekey').firstElementChild.classList.add('tick')
+    }
+    else{
+        document.getElementById('setting-privatekey').firstElementChild.classList.remove('tick')
+    }
 })
 
 // document.getElementById('proofedDirBtn').addEventListener('click', () =>{

@@ -13,8 +13,8 @@ class Main {
     }
     private createWindow(){
         this.mainWindow = new BrowserWindow({
-            width: 500,
-            height: 400,
+            width: 900,
+            height: 600,
             webPreferences: {
                 nodeIntegration: true,
                 contextIsolation: false,
