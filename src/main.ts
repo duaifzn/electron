@@ -14,7 +14,11 @@ class Main {
     private createWindow(){
         this.mainWindow = new BrowserWindow({
             width: 900,
-            height: 600,
+            height: 575,
+            icon: path.resolve(__dirname, "../view/img/logo.png"),
+            title: '離線簽章程式',
+            resizable: false,
+            autoHideMenuBar: true,
             webPreferences: {
                 nodeIntegration: true,
                 contextIsolation: false,

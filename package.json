@@ -41,7 +41,11 @@
       "output": "build"
     },
     "mac": {},
-    "win": {},
+    "win": {
+      "target": [
+        "portable"
+      ]
+    },
     "linux": {
       "target": [
         "AppImage"
