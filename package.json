@@ -1,5 +1,5 @@
 {
-  "name": "local",
+  "name": "offlinesign",
   "version": "1.0.0",
   "description": "",
   "main": "dist/main.js",
@@ -11,7 +11,7 @@
   },
   "keywords": [],
   "homepage": "https://github.com/owner/project#readme",
-  "author": "duaifzn <duaifzn@gmail.com>",
+  "author": "III <iii@iii.org.tw>",
   "license": "ISC",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
@@ -35,8 +35,8 @@
     "eslint": "^8.7.0"
   },
   "build": {
-    "appId": "com.cilent.app.electronbuild",
-    "productName": "electron-build",
+    "appId": "com.cilent.app.iiiofflineSign",
+    "productName": "III-offlineSign",
     "directories": {
       "output": "build"
     },
