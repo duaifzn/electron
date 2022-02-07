@@ -4,46 +4,73 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iii</title>
-    <link rel="stylesheet" href="./style.css">
+    <title>離線簽章程式</title>
+    <link rel="icon" type="image/gif/png" href="./img/logo.png">
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="../node_modules/@fortawesome/fontawesome-free/css/fontawesome.css" rel="stylesheet">
+    <link href="../node_modules/@fortawesome/fontawesome-free/css/brands.css" rel="stylesheet">
+    <link href="../node_modules/@fortawesome/fontawesome-free/css/regular.css" rel="stylesheet">
+    <link href="../node_modules/@fortawesome/fontawesome-free/css/solid.css" rel="stylesheet">
+    <link href="../node_modules/@fortawesome/fontawesome-free/css/svg-with-js.css" rel="stylesheet">
+    <link href="../node_modules/@fortawesome/fontawesome-free/css/v4-shims.css" rel="stylesheet">
 </head>
 <body>
-    <div>
-        <h1>存證加密</h1>
-        <div class="row">
-            <span>指定未存證資料夾:</span>
-            <div class="unProofDir">
-                <input type="text" id="unProofDir" name="unProofDir" disabled>
-                <button id="unProofDirBtn">選擇</button>
-            </div>
+    <div class="row content">
+        <div class="col-4 navbar-custom">
+            <h2 class="title">Signature APP</h2>
+            <ul class="">
+                <li class="" id="produce-sign">製作檔案簽章</li>
+                <li class="" id="setting-folder">設定存證資料夾 <i class="far fa-check-square"></i></li>
+                <li class="" id="setting-privatekey">設定企業私鑰 <i class="far fa-check-square icon-left"></i></li>
+                <li class="select-active" id="instructions">使用方式介紹</li>
+            </ul>
         </div>
-
-        <!-- <div class="row">
-            <span>已存證資料夾:</span>
-            <div class="proofedDir">
-                <input type="text" id="proofedDir" name="proofedDir" disabled>
-                <button id="proofedDirBtn">選擇</button>
+        <div class="col-8">
+            <div class="row mt-3 hidden" id="col-unProofDir">
+                <label>設定存證資料夾</label>
+                <div class="input-group mt-5">
+                    <input type="text" id="unProofDir" class="form-control" disabled>
+                    <button class="btn btn-primary" type="button" id="unProofDirBtn">選擇</button>
+                </div>
             </div>
-        </div> -->
-
-        <div class="row">
-            <span>私鑰:</span>
-            <div class="privateKey">
-                <input type="file" id="privateKey" name="privateKey" multiple>
+            <!-- <div class="row">
+                <span>已存證資料夾:</span>
+                <div class="proofedDir">
+                    <input type="text" id="proofedDir" name="proofedDir" disabled>
+                    <button id="proofedDirBtn">選擇</button>
+                </div>
+            </div> -->
+            <div class="row mt-3 hidden" id="col-privateKey">
+                <label>設定企業私鑰</label>
+                <div class="input-group mt-5">
+                    <input type="file" class="form-control" id="privateKey" name="privateKey" multiple>
+                </div>
             </div>
-        </div>
-
-        <div class="row">
-            <span>上傳檔案: </span>
-            <div class="uploadFile">
-                <input type="file" id="uploadFile" name="uploadFile" multiple>
+    
+            <div class="row mt-3 hidden" id="col-uploadFile">
+                <label>選擇檔案產生檔案簽章</label>
+                <div class="input-group mt-5">
+                    <input type="file" class="form-control" id="uploadFile" name="uploadFile" multiple>
+                </div>
             </div>
-        </div>
 
-        <div>
-            <button type="button" id="encode">加密</button>
+            <div class="row mt-3" id="col-instructions">
+                <label>使用方式介紹</label>
+                <img class="mt-5" src="img/instructions.png" alt="" srcset="">
+                
+            </div>
+            <div class="row mt-3 hidden" id="col-encode">
+                <div class="col"></div>
+                <div class="col text-center">
+                    <button type="button" class="btn btn-primary" id="encode">加密</button>
+                </div>
+                <div class="col"></div>
+            </div>
         </div>
     </div>
+    <script src="bootstrap/js/bootstrap.js"></script>
+    <script src="js/navbar.js"></script>
     <script>
         require('../dist/index.js');
     </script>
