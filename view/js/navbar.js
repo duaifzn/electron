@@ -25,4 +25,10 @@ $('#instructions').on('click', () =>{
     $('.row.mt-3').addClass('hidden')
     $('#col-instructions').removeClass('hidden')
 })
+$('#setting-cloudlog-folder').on('click', () =>{
+    $('li').removeClass('select-active')
+    $('#setting-cloudlog-folder').addClass('select-active')
+    $('.row.mt-3').addClass('hidden')
+    $('#col-cloudLogDir').removeClass('hidden')
+})
 

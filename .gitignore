@@ -4,3 +4,7 @@ certificate.crt
 dist/
 private.key
 build/
+cloudLogEncoded/
+cloudLogDir/
+log/
+setting.json

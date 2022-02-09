@@ -2,7 +2,7 @@ import * as pki from './service/pki';
 import { readFileSync, appendFileSync, readdirSync } from "fs";
 import { unProofDto } from './dto/unProofDto';
 import { ipcRenderer } from 'electron';
-import { IpcChannel } from './dto/ipcDto';
+import { IpcChannel, writeSettingChannelDto } from './dto/ipcDto';
 import { FilenameExtension } from './dto/filenameExtension'
 import { logger } from './service/logger'
 import { performance } from 'perf_hooks';
@@ -16,6 +16,7 @@ document.getElementById('encode').addEventListener('click', () =>{
         }
         const privateKeyPath = (document.getElementById('privateKey') as HTMLInputElement).files[0].path
         let uploadFilePath = (document.getElementById('uploadFile') as HTMLInputElement).files[0].path
+        const cloudLogPath = (document.getElementById('cloudLogDir') as HTMLInputElement).value
         const unProofDirPath = (document.getElementById('unProofDir') as HTMLInputElement).value
         const uploadFileName = getFileNameWithOS(uploadFilePath)
         if(!duplicateFileValidate(unProofDirPath, uploadFileName)){
@@ -36,6 +37,12 @@ document.getElementById('encode').addEventListener('click', () =>{
         appendFileSync(`${unProofDirPath}/${uploadFileName}${FilenameExtension.unProof}`, JSON.stringify(unProofData))
         reset()
         sweetAlertSuccess(`檔案簽章成功!!`)
+        const writeSettingData: writeSettingChannelDto = {
+            unProofDirPath: unProofDirPath,
+            privateKeyPath: privateKeyPath,
+            cloudLogDirPath: cloudLogPath,
+        }
+        ipcRenderer.send(IpcChannel.writeSetting, writeSettingData)
     }catch(err){
         logger.error(`${err}`)
         sweetAlertError(`${err}`)
@@ -51,6 +58,19 @@ document.getElementById('unProofDirBtn').addEventListener('click', () =>{
             document.getElementById('setting-folder').firstElementChild.classList.remove('tick')
         }
         (document.getElementById('unProofDir') as HTMLInputElement).value = arg
+    })
+    ipcRenderer.send(IpcChannel.selectDir)
+})
+
+document.getElementById('cloudLogDirBtn').addEventListener('click', () =>{
+    ipcRenderer.on(IpcChannel.selectDir, (event, arg) =>{
+        if(arg.length !== 0){
+            document.getElementById('setting-cloudlog-folder').firstElementChild.classList.add('tick')
+        }
+        else{
+            document.getElementById('setting-cloudlog-folder').firstElementChild.classList.remove('tick')
+        }
+        (document.getElementById('cloudLogDir') as HTMLInputElement).value = arg
     })
     ipcRenderer.send(IpcChannel.selectDir)
 })
@@ -82,6 +102,10 @@ function inputValidate(): Boolean{
     }
     if(!(document.getElementById('unProofDir') as HTMLInputElement).value){
         sweetAlertError('請輸入未存證資料夾!!')
+        return false
+    }
+    if(!(document.getElementById('cloudLogDir') as HTMLInputElement).value){
+        sweetAlertError('請輸入雲端Log資料夾!!')
         return false
     }
     // if(!(document.getElementById('proofedDir') as HTMLInputElement).value){
