@@ -70,17 +70,23 @@ class Main {
         ipcMain.on(IpcChannel.selectDir, selectDir)
         ipcMain.on(IpcChannel.writeSetting, writeSetting)
     }
-    private startCloudLogEncode(){
+    private startCloudLogEncode(){ 
+        if(!existsSync(FileName.settingJson)){
+            return
+        }
+        if(!existsSync(DirName.cloudLogEncoded)){
+            mkdirSync(DirName.cloudLogEncoded, { recursive: true })
+        }  
+        const setting: settingDto = JSON.parse(readFileSync(FileName.settingJson, "utf-8"))
+        setInterval(this.cloudLogEncode, setting.cloudLogTime)
+    }
+    private cloudLogEncode(){
         if(!existsSync(FileName.settingJson)){
             return
         }
         if(!existsSync(DirName.cloudLogEncoded)){
             mkdirSync(DirName.cloudLogEncoded, { recursive: true })
         }
-        const setting: settingDto = JSON.parse(readFileSync(FileName.settingJson, "utf-8"))
-        setInterval(this.cloudLogEncode, setting.cloudLogTime)
-    }
-    private cloudLogEncode(){
         const setting: settingDto = JSON.parse(readFileSync(FileName.settingJson, "utf-8"))
         if(!setting.cloudLogDirPath && 
             !setting.cloudLogTime && 
