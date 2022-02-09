@@ -7,3 +7,7 @@ export interface writeSettingChannelDto {
     privateKeyPath: string,
     cloudLogDirPath: string,
 }
+export interface selectDirDto {
+    sender: string,
+    selectPath: string,
+}

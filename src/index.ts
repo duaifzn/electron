@@ -2,7 +2,7 @@ import * as pki from './service/pki';
 import { readFileSync, appendFileSync, readdirSync } from "fs";
 import { unProofDto } from './dto/unProofDto';
 import { ipcRenderer } from 'electron';
-import { IpcChannel, writeSettingChannelDto } from './dto/ipcDto';
+import { IpcChannel, writeSettingChannelDto, selectDirDto } from './dto/ipcDto';
 import { FilenameExtension } from './dto/filenameExtension'
 import { logger } from './service/logger'
 import { performance } from 'perf_hooks';
@@ -57,9 +57,10 @@ document.getElementById('unProofDirBtn').addEventListener('click', () =>{
         else{
             document.getElementById('setting-folder').firstElementChild.classList.remove('tick')
         }
-        (document.getElementById('unProofDir') as HTMLInputElement).value = arg
+        let res = arg as selectDirDto
+        (document.getElementById(res.sender) as HTMLInputElement).value = res.selectPath
     })
-    ipcRenderer.send(IpcChannel.selectDir)
+    ipcRenderer.send(IpcChannel.selectDir, 'unProofDir')
 })
 
 document.getElementById('cloudLogDirBtn').addEventListener('click', () =>{
@@ -70,9 +71,10 @@ document.getElementById('cloudLogDirBtn').addEventListener('click', () =>{
         else{
             document.getElementById('setting-cloudlog-folder').firstElementChild.classList.remove('tick')
         }
-        (document.getElementById('cloudLogDir') as HTMLInputElement).value = arg
+        let res = arg as selectDirDto
+        (document.getElementById(res.sender) as HTMLInputElement).value = res.selectPath
     })
-    ipcRenderer.send(IpcChannel.selectDir)
+    ipcRenderer.send(IpcChannel.selectDir, 'cloudLogDir')
 })
 
 document.getElementById('privateKey').addEventListener('change', () =>{
