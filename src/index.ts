@@ -56,7 +56,7 @@ document.getElementById('unProofDirBtn').addEventListener('click', () =>{
             document.getElementById('setting-folder').firstElementChild.classList.add('tick');
             (document.getElementById(res.sender) as HTMLInputElement).value = res.selectPath
         }
-        else{
+        else if(!(document.getElementById(res.sender) as HTMLInputElement).value){
             document.getElementById('setting-folder').firstElementChild.classList.remove('tick')
         }
     })
@@ -70,7 +70,7 @@ document.getElementById('cloudLogDirBtn').addEventListener('click', () =>{
             document.getElementById('setting-cloudlog-folder').firstElementChild.classList.add('tick');
             (document.getElementById(res.sender) as HTMLInputElement).value = res.selectPath
         }
-        else{
+        else if(!(document.getElementById(res.sender) as HTMLInputElement).value){
             document.getElementById('setting-cloudlog-folder').firstElementChild.classList.remove('tick')
         } 
     })
