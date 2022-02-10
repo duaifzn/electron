@@ -82,8 +82,6 @@ class Main {
         if(!existsSync(DirName.cloudLogEncoded)){
             mkdirSync(DirName.cloudLogEncoded, { recursive: true })
         }
-        logger.info(`process.env.PORTABLE_EXECUTABLE_DIR: ${process.env.PORTABLE_EXECUTABLE_DIR}`)
-        logger.info(`process.env: ${JSON.stringify(process.env)}`)
         const setting: settingDto = JSON.parse(readFileSync(FileName.settingJson, "utf-8"))
         setInterval(this.cloudLogEncode, setting.cloudLogTime)
     }

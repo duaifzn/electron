@@ -1,6 +1,7 @@
 import * as winston from 'winston';
 import { existsSync, mkdirSync } from 'fs';
-const logPath = 'log'
+const PORTABLE_EXECUTABLE_DIR = process.env.PORTABLE_EXECUTABLE_DIR?process.env.PORTABLE_EXECUTABLE_DIR+'\\':'';
+const logPath = `${PORTABLE_EXECUTABLE_DIR}log`
 if(!existsSync(logPath)){
   mkdirSync(logPath)
 }
