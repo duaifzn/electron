@@ -1,6 +1,6 @@
 import { dialog, IpcMainEvent } from 'electron'
 import { IpcChannel } from '../dto/ipcDto'
-import { writeFileSync ,readFileSync, existsSync } from 'fs'
+import { writeFileSync ,readFileSync } from 'fs'
 import { FileName } from '../dto/fileName'
 import { selectDirDto } from '../dto/ipcDto'
 
@@ -18,11 +18,6 @@ export async function selectDir(event: IpcMainEvent, arg: any){
 }
 
 export async function writeSetting(event: IpcMainEvent, arg: any){
-  if(!existsSync(FileName.settingJson)){
-    writeFileSync(FileName.settingJson, JSON.stringify({...arg, cloudLogTime : 120000}))
-  }
-  else{
     let setting = JSON.parse(readFileSync(FileName.settingJson, "utf-8"))
     writeFileSync(FileName.settingJson, JSON.stringify({...arg, cloudLogTime : setting.cloudLogTime}))
-  }
 }
