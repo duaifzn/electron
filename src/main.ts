@@ -71,16 +71,16 @@ class Main {
         ipcMain.on(IpcChannel.writeSetting, writeSetting)
     }
     private startCloudLogEncode(){ 
-        if(!existsSync(`${FileName.settingJson}`)){
-            writeFileSync(FileName.settingJson, JSON.stringify({ 
+        if(!existsSync(`${PORTABLE_EXECUTABLE_DIR}${FileName.settingJson}`)){
+            writeFileSync(`${PORTABLE_EXECUTABLE_DIR}${FileName.settingJson}`, JSON.stringify({ 
                 unProofDirPath: "",
                 privateKeyPath: "",
                 cloudLogDirPath: "",
                 cloudLogTime : 120000
             }))
         }
-        if(!existsSync(DirName.cloudLogEncoded)){
-            mkdirSync(DirName.cloudLogEncoded, { recursive: true })
+        if(!existsSync(`${PORTABLE_EXECUTABLE_DIR}${DirName.cloudLogEncoded}`)){
+            mkdirSync(`${PORTABLE_EXECUTABLE_DIR}${DirName.cloudLogEncoded}`, { recursive: true })
         }
         const setting: settingDto = JSON.parse(readFileSync(FileName.settingJson, "utf-8"))
         setInterval(this.cloudLogEncode, setting.cloudLogTime)
@@ -102,6 +102,7 @@ class Main {
             !setting.cloudLogTime || 
             !setting.privateKeyPath ||
             !setting.unProofDirPath){
+                logger.error('setting.json parameter empty')
                 return
         }
         const privateKey = readFileSync(`${setting.privateKeyPath}`, 'utf8');
@@ -118,7 +119,7 @@ class Main {
                 sign: `${sign}`,
                 spendTime: `${endTime - startTime}`
             }
-            renameSync(`${setting.cloudLogDirPath}/${fileName}`, `${DirName.cloudLogEncoded}/${fileName}`)
+            renameSync(`${setting.cloudLogDirPath}/${fileName}`, `${PORTABLE_EXECUTABLE_DIR}${DirName.cloudLogEncoded}/${fileName}`)
             appendFileSync(`${setting.unProofDirPath}/${fileName}${FilenameExtension.unProof}`, JSON.stringify(unProofData))
         })
     }
