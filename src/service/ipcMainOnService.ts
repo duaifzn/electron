@@ -1,8 +1,9 @@
 import { dialog, IpcMainEvent } from 'electron'
 import { IpcChannel } from '../dto/ipcDto'
-import { writeFileSync ,readFileSync } from 'fs'
+import { writeFileSync ,readFileSync, existsSync } from 'fs'
 import { FileName } from '../dto/fileName'
 import { selectDirDto } from '../dto/ipcDto'
+const PORTABLE_EXECUTABLE_DIR = process.env.PORTABLE_EXECUTABLE_DIR?process.env.PORTABLE_EXECUTABLE_DIR+'\\':'';
 
 export async function selectDir(event: IpcMainEvent, arg: any){
     const sender = arg
@@ -18,6 +19,10 @@ export async function selectDir(event: IpcMainEvent, arg: any){
 }
 
 export async function writeSetting(event: IpcMainEvent, arg: any){
-    let setting = JSON.parse(readFileSync(FileName.settingJson, "utf-8"))
-    writeFileSync(FileName.settingJson, JSON.stringify({...arg, cloudLogTime : setting.cloudLogTime}))
+    if(!existsSync(`${PORTABLE_EXECUTABLE_DIR}${FileName.settingJson}`)){
+      writeFileSync(`${PORTABLE_EXECUTABLE_DIR}${FileName.settingJson}`, JSON.stringify({...arg, cloudLogTime : 120000}))
+      return
+    }
+    let setting = JSON.parse(readFileSync(`${PORTABLE_EXECUTABLE_DIR}${FileName.settingJson}`, "utf-8"))
+    writeFileSync(`${PORTABLE_EXECUTABLE_DIR}${FileName.settingJson}`, JSON.stringify({...arg, cloudLogTime : setting.cloudLogTime}))
 }
