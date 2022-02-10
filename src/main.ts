@@ -2,15 +2,15 @@ import { app, BrowserWindow, ipcMain, Tray, Menu } from 'electron'
 import * as path from 'path'
 import { IpcChannel } from './dto/ipcDto'
 import { selectDir, writeSetting } from './service/ipcMainOnService'
-import { readFileSync, existsSync, appendFileSync, readdirSync, renameSync, mkdirSync } from 'fs'
+import { readFileSync, existsSync, appendFileSync, readdirSync, renameSync, mkdirSync, writeFileSync } from 'fs'
 import * as pki from './service/pki';
 import { logger } from './service/logger';
 import { FilenameExtension } from './dto/filenameExtension';
 import { unProofDto } from './dto/unProofDto';
 import { settingDto } from './dto/setting';
-import { DirName } from './dto/dirName'
-import { FileName } from './dto/fileName' 
-
+import { DirName } from './dto/dirName';
+import { FileName } from './dto/fileName'; 
+const PORTABLE_EXECUTABLE_DIR = process.env.PORTABLE_EXECUTABLE_DIR?process.env.PORTABLE_EXECUTABLE_DIR+'\\':'';
 class Main {
     private mainWindow: BrowserWindow
 
@@ -71,26 +71,37 @@ class Main {
         ipcMain.on(IpcChannel.writeSetting, writeSetting)
     }
     private startCloudLogEncode(){ 
-        if(!existsSync(FileName.settingJson)){
-            return
+        if(!existsSync(`${FileName.settingJson}`)){
+            writeFileSync(FileName.settingJson, JSON.stringify({ 
+                unProofDirPath: "",
+                privateKeyPath: "",
+                cloudLogDirPath: "",
+                cloudLogTime : 120000
+            }))
         }
         if(!existsSync(DirName.cloudLogEncoded)){
             mkdirSync(DirName.cloudLogEncoded, { recursive: true })
-        }  
+        }
+        logger.info(`process.env.PORTABLE_EXECUTABLE_DIR: ${process.env.PORTABLE_EXECUTABLE_DIR}`)
         const setting: settingDto = JSON.parse(readFileSync(FileName.settingJson, "utf-8"))
         setInterval(this.cloudLogEncode, setting.cloudLogTime)
     }
     private cloudLogEncode(){
-        if(!existsSync(FileName.settingJson)){
-            return
+        if(!existsSync(`${PORTABLE_EXECUTABLE_DIR}${FileName.settingJson}`)){
+            writeFileSync(`${PORTABLE_EXECUTABLE_DIR}${FileName.settingJson}`, JSON.stringify({ 
+                unProofDirPath: "",
+                privateKeyPath: "",
+                cloudLogDirPath: "",
+                cloudLogTime : 120000
+            }))
         }
-        if(!existsSync(DirName.cloudLogEncoded)){
-            mkdirSync(DirName.cloudLogEncoded, { recursive: true })
+        if(!existsSync(`${PORTABLE_EXECUTABLE_DIR}${DirName.cloudLogEncoded}`)){
+            mkdirSync(`${PORTABLE_EXECUTABLE_DIR}${DirName.cloudLogEncoded}`, { recursive: true })
         }
-        const setting: settingDto = JSON.parse(readFileSync(FileName.settingJson, "utf-8"))
-        if(!setting.cloudLogDirPath && 
-            !setting.cloudLogTime && 
-            !setting.privateKeyPath &&
+        const setting: settingDto = JSON.parse(readFileSync(`${PORTABLE_EXECUTABLE_DIR}${FileName.settingJson}`, "utf-8"))
+        if(!setting.cloudLogDirPath || 
+            !setting.cloudLogTime || 
+            !setting.privateKeyPath ||
             !setting.unProofDirPath){
                 return
         }

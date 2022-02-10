@@ -51,28 +51,28 @@ document.getElementById('encode').addEventListener('click', () =>{
 
 document.getElementById('unProofDirBtn').addEventListener('click', () =>{
     ipcRenderer.on(IpcChannel.selectDir, (event, arg) =>{
-        if(arg.length !== 0){
-            document.getElementById('setting-folder').firstElementChild.classList.add('tick')
+        let res = arg as selectDirDto
+        if(arg.selectPath){
+            document.getElementById('setting-folder').firstElementChild.classList.add('tick');
+            (document.getElementById(res.sender) as HTMLInputElement).value = res.selectPath
         }
         else{
             document.getElementById('setting-folder').firstElementChild.classList.remove('tick')
         }
-        let res = arg as selectDirDto
-        (document.getElementById(res.sender) as HTMLInputElement).value = res.selectPath
     })
     ipcRenderer.send(IpcChannel.selectDir, 'unProofDir')
 })
 
 document.getElementById('cloudLogDirBtn').addEventListener('click', () =>{
     ipcRenderer.on(IpcChannel.selectDir, (event, arg) =>{
-        if(arg.length !== 0){
-            document.getElementById('setting-cloudlog-folder').firstElementChild.classList.add('tick')
+        let res = arg as selectDirDto
+        if(arg.selectPath){
+            document.getElementById('setting-cloudlog-folder').firstElementChild.classList.add('tick');
+            (document.getElementById(res.sender) as HTMLInputElement).value = res.selectPath
         }
         else{
             document.getElementById('setting-cloudlog-folder').firstElementChild.classList.remove('tick')
-        }
-        let res = arg as selectDirDto
-        (document.getElementById(res.sender) as HTMLInputElement).value = res.selectPath
+        } 
     })
     ipcRenderer.send(IpcChannel.selectDir, 'cloudLogDir')
 })
