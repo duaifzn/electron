@@ -21,34 +21,12 @@
             <h2 class="title">Signature APP</h2>
             <ul class="">
                 <li class="" id="produce-sign">製作檔案簽章</li>
-                <li class="" id="setting-folder">設定存證資料夾 <i class="far fa-check-square"></i></li>
                 <li class="" id="setting-privatekey">設定企業私鑰 <i class="far fa-check-square icon-left"></i></li>
-                <li class="" id="setting-cloudlog-folder">設定雲端Log資料夾 <i class="far fa-check-square"></i></li>
+                <li class="" id="setting-apikey">設定api key <i class="far fa-check-square icon-left"></i></li>
                 <li class="select-active" id="instructions">使用方式介紹</li>
             </ul>
         </div>
         <div class="col-8">
-            <div class="row mt-3 hidden" id="col-unProofDir">
-                <label>設定存證資料夾</label>
-                <div class="input-group mt-5">
-                    <input type="text" id="unProofDir" class="form-control" disabled>
-                    <button class="btn btn-primary" type="button" id="unProofDirBtn">選擇</button>
-                </div>
-            </div>
-            <div class="row mt-3 hidden" id="col-cloudLogDir">
-                <label>設定雲端Log資料夾</label>
-                <div class="input-group mt-5">
-                    <input type="text" id="cloudLogDir" class="form-control" disabled>
-                    <button class="btn btn-primary" type="button" id="cloudLogDirBtn">選擇</button>
-                </div>
-            </div>
-            <!-- <div class="row">
-                <span>已存證資料夾:</span>
-                <div class="proofedDir">
-                    <input type="text" id="proofedDir" name="proofedDir" disabled>
-                    <button id="proofedDirBtn">選擇</button>
-                </div>
-            </div> -->
             <div class="row mt-3 hidden" id="col-privateKey">
                 <label>設定企業私鑰</label>
                 <div class="input-group mt-5">
@@ -56,10 +34,21 @@
                 </div>
             </div>
     
+            <div class="row mt-3 hidden" id="col-apiKey">
+                <label>設定api key</label>
+                <div class="input-group mt-5">
+                    <input type="text" class="form-control" id="apiKey" name="apiKey" multiple>
+                </div>
+            </div>
+
             <div class="row mt-3 hidden" id="col-uploadFile">
                 <label>選擇檔案產生檔案簽章</label>
                 <div class="input-group mt-5">
                     <input type="file" class="form-control" id="uploadFile" name="uploadFile" multiple>
+                </div>
+                <div class="input-group mt-5">
+                    <span class="input-group-text" id="inputGroup-sizing-default">標籤</span>
+                    <input type="text" class="form-control" id="fileTag" aria-describedby="inputGroup-sizing-default">
                 </div>
             </div>
 
@@ -68,10 +57,10 @@
                 <img class="mt-5" src="img/instructions.png" alt="" srcset="">
                 
             </div>
-            <div class="row mt-3 hidden" id="col-encode">
+            <div class="row mt-3 hidden" id="col-send">
                 <div class="col"></div>
                 <div class="col text-center">
-                    <button type="button" class="btn btn-primary" id="encode">加密</button>
+                    <button type="button" class="btn btn-primary" id="send">傳送</button>
                 </div>
                 <div class="col"></div>
             </div>
@@ -79,7 +68,6 @@
     </div>
     <script src="bootstrap/js/bootstrap.js"></script>
     <script src="js/navbar.js"></script>
-    <script src="js/setting.js"></script>
     <script>
         require('../dist/index.js');
     </script>

@@ -5,13 +5,13 @@ $('#produce-sign').on('click', () =>{
     $('#produce-sign').addClass('select-active')
     $('.row.mt-3').addClass('hidden')
     $('#col-uploadFile').removeClass('hidden')
-    $('#col-encode').removeClass('hidden')
+    $('#col-send').removeClass('hidden')
 })
-$('#setting-folder').on('click', () =>{
+$('#setting-apikey').on('click', () =>{
     $('li').removeClass('select-active')
-    $('#setting-folder').addClass('select-active')
+    $('#setting-apikey').addClass('select-active')
     $('.row.mt-3').addClass('hidden')
-    $('#col-unProofDir').removeClass('hidden')
+    $('#col-apiKey').removeClass('hidden')
 })
 $('#setting-privatekey').on('click', () =>{
     $('li').removeClass('select-active')
@@ -24,11 +24,5 @@ $('#instructions').on('click', () =>{
     $('#instructions').addClass('select-active')
     $('.row.mt-3').addClass('hidden')
     $('#col-instructions').removeClass('hidden')
-})
-$('#setting-cloudlog-folder').on('click', () =>{
-    $('li').removeClass('select-active')
-    $('#setting-cloudlog-folder').addClass('select-active')
-    $('.row.mt-3').addClass('hidden')
-    $('#col-cloudLogDir').removeClass('hidden')
 })
 

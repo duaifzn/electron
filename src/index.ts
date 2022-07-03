@@ -1,148 +1,102 @@
 import * as pki from './service/pki';
-import { readFileSync, appendFileSync, readdirSync } from "fs";
-import { unProofDto } from './dto/unProofDto';
+import { readFileSync } from "fs";
 import { ipcRenderer } from 'electron';
-import { IpcChannel, writeSettingChannelDto, selectDirDto } from './dto/ipcDto';
-import { FilenameExtension } from './dto/filenameExtension'
+import { IpcChannel, writeSettingChannelDto } from './dto/ipcDto';
 import { logger } from './service/logger'
 import { performance } from 'perf_hooks';
 import * as os from 'os';
 import Swal from 'sweetalert2';
-  
-document.getElementById('encode').addEventListener('click', () =>{
-    try{
-        if(!inputValidate()){
+import { sendToServer } from './util/request';
+
+document.getElementById('send').addEventListener('click', async () => {
+    try {
+        if (!inputValidate()) {
             return
         }
         const privateKeyPath = (document.getElementById('privateKey') as HTMLInputElement).files[0].path
         let uploadFilePath = (document.getElementById('uploadFile') as HTMLInputElement).files[0].path
-        const cloudLogPath = (document.getElementById('cloudLogDir') as HTMLInputElement).value
-        const unProofDirPath = (document.getElementById('unProofDir') as HTMLInputElement).value
+        let apiKey = (document.getElementById('apiKey') as HTMLInputElement).value.trim()
+        let tags = (document.getElementById('fileTag') as HTMLInputElement).value.split(",")
         const uploadFileName = getFileNameWithOS(uploadFilePath)
-        if(!duplicateFileValidate(unProofDirPath, uploadFileName)){
-            return
-        }
+
         const privateKey = readFileSync(`${privateKeyPath}`, 'utf8');
         const uploadFile = readFileSync(`${uploadFilePath}`);
         //---------------------------------
         const startTime = performance.now()
         const sign = pki.sign(privateKey, uploadFile).toString('hex');
         const endTime = performance.now()
-        logger.info(`Encode ${uploadFileName} spend ${endTime - startTime} milliseconds.`)
+        logger.info(`Encode ${uploadFileName} spend ${endTime - startTime} milliseconds.`);
         //---------------------------------
-        const unProofData: unProofDto = {
-            sign: `${sign}`,
-            spendTime: `${endTime - startTime}`
+        let data = await sendToServer({
+            signature: sign,
+            tags: tags
+        }, apiKey)
+        if(data.error){
+            throw data.error
         }
-        appendFileSync(`${unProofDirPath}/${uploadFileName}${FilenameExtension.unProof}`, JSON.stringify(unProofData))
+        logger.info(`success. sign ID:${data.data[0]}`);
         reset()
-        sweetAlertSuccess(`檔案簽章成功!!`)
+        sweetAlertSuccess(`檔案簽章成功!!\n存證ID: ${data.data[0]}`)
         const writeSettingData: writeSettingChannelDto = {
-            unProofDirPath: unProofDirPath,
             privateKeyPath: privateKeyPath,
-            cloudLogDirPath: cloudLogPath,
+            apiKey: apiKey,
         }
         ipcRenderer.send(IpcChannel.writeSetting, writeSettingData)
-    }catch(err){
+    } catch (err) {
         logger.error(`${err}`)
         sweetAlertError(`${err}`)
     }
 })
 
-document.getElementById('unProofDirBtn').addEventListener('click', () =>{
-    ipcRenderer.on(IpcChannel.selectDir, (event, arg) =>{
-        let res = arg as selectDirDto
-        if(arg.selectPath){
-            document.getElementById('setting-folder').firstElementChild.classList.add('tick');
-            (document.getElementById(res.sender) as HTMLInputElement).value = res.selectPath
-        }
-        else if(!(document.getElementById(res.sender) as HTMLInputElement).value){
-            document.getElementById('setting-folder').firstElementChild.classList.remove('tick')
-        }
-    })
-    ipcRenderer.send(IpcChannel.selectDir, 'unProofDir')
-})
-
-document.getElementById('cloudLogDirBtn').addEventListener('click', () =>{
-    ipcRenderer.on(IpcChannel.selectDir, (event, arg) =>{
-        let res = arg as selectDirDto
-        if(arg.selectPath){
-            document.getElementById('setting-cloudlog-folder').firstElementChild.classList.add('tick');
-            (document.getElementById(res.sender) as HTMLInputElement).value = res.selectPath
-        }
-        else if(!(document.getElementById(res.sender) as HTMLInputElement).value){
-            document.getElementById('setting-cloudlog-folder').firstElementChild.classList.remove('tick')
-        } 
-    })
-    ipcRenderer.send(IpcChannel.selectDir, 'cloudLogDir')
-})
-
-document.getElementById('privateKey').addEventListener('change', () =>{
-    if((document.getElementById('privateKey') as HTMLInputElement).value){
+document.getElementById('privateKey').addEventListener('change', () => {
+    if ((document.getElementById('privateKey') as HTMLInputElement).value) {
         document.getElementById('setting-privatekey').firstElementChild.classList.add('tick')
     }
-    else{
+    else {
         document.getElementById('setting-privatekey').firstElementChild.classList.remove('tick')
     }
 })
 
-// document.getElementById('proofedDirBtn').addEventListener('click', () =>{
-//     ipcRenderer.on(IpcChannel.selectDir, (event, arg) =>{
-//         (document.getElementById('proofedDir') as HTMLInputElement).value = arg
-//     })
-//     ipcRenderer.send(IpcChannel.selectDir)
-// })
+document.getElementById('apiKey').addEventListener('input', () => {
+    if ((document.getElementById('apiKey') as HTMLInputElement).value) {
+        document.getElementById('setting-apikey').firstElementChild.classList.add('tick')
+    }
+    else {
+        document.getElementById('setting-apikey').firstElementChild.classList.remove('tick')
+    }
+})
 
-function inputValidate(): Boolean{
-    if(!(document.getElementById('privateKey') as HTMLInputElement).files[0]){
+
+function inputValidate(): Boolean {
+    if (!(document.getElementById('privateKey') as HTMLInputElement).files[0]) {
         sweetAlertError('缺少私鑰!!')
         return false
     }
-    if(!(document.getElementById('uploadFile') as HTMLInputElement).files[0]){
+    if (!(document.getElementById('uploadFile') as HTMLInputElement).files[0]) {
         sweetAlertError('缺少上傳檔案!!')
         return false
     }
-    if(!(document.getElementById('unProofDir') as HTMLInputElement).value){
-        sweetAlertError('請輸入未存證資料夾!!')
-        return false
-    }
-    if(!(document.getElementById('cloudLogDir') as HTMLInputElement).value){
-        sweetAlertError('請輸入雲端Log資料夾!!')
-        return false
-    }
-    // if(!(document.getElementById('proofedDir') as HTMLInputElement).value){
-    //     alert('請輸入存證資料夾!!')
-    //     return false
-    // }
     return true
 }
 
-function duplicateFileValidate(dir: string, fileName: string){
-    const files = readdirSync(dir)
-    if(files.includes(`${fileName}${FilenameExtension.unProof}`)){
-        sweetAlertError('上傳檔案名稱重複!!')
-        return false
-    }
-    return true
-}
-
-function reset(){
+function reset() {
     (document.getElementById('uploadFile') as HTMLInputElement).value = null;
+    (document.getElementById('fileTag') as HTMLInputElement).value = null;
 }
 
-function getFileNameWithOS(path: string){
+function getFileNameWithOS(path: string) {
     const osPlatform = os.platform();
-    if(osPlatform === 'win32'){
+    if (osPlatform === 'win32') {
         return path.split(`\\`).pop();
     }
-    else if(osPlatform === 'linux'){
+    else if (osPlatform === 'linux') {
         return path.split(`/`).pop();
-    }else{
+    } else {
         return path.split(`/`).pop();
     }
 }
 
-function sweetAlertError(msg: string){
+function sweetAlertError(msg: string) {
     Swal.fire({
         title: '錯誤',
         text: msg,
@@ -152,21 +106,22 @@ function sweetAlertError(msg: string){
     })
 }
 
-function sweetAlertSuccess(msg: string){
+function sweetAlertSuccess(msg: string) {
     const Toast = Swal.mixin({
         toast: true,
-        position: 'top-end',
+        position: 'top',
         showConfirmButton: false,
-        timer: 3000,
+        timer: 8000,
         timerProgressBar: true,
         didOpen: (toast) => {
-          toast.addEventListener('mouseenter', Swal.stopTimer)
-          toast.addEventListener('mouseleave', Swal.resumeTimer)
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
         }
     })
 
     Toast.fire({
         icon: 'success',
-        title: msg
-      })
+        title: msg,
+        width: 600,
+    })
 }
