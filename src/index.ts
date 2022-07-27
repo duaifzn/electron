@@ -25,7 +25,7 @@ document.getElementById('send').addEventListener('click', async () => {
         const startTime = performance.now()
         const sign = pki.sign(privateKey, uploadFile).toString('hex');
         const endTime = performance.now()
-        logger.info(`Encode ${uploadFileName} spend ${endTime - startTime} milliseconds.`);
+        logger.info(`Encode ${uploadFileName}, tags ${tags}, sign ${sign}, spend ${endTime - startTime} milliseconds.`);
         //---------------------------------
         let data = await sendToServer({
             signature: sign,
@@ -34,7 +34,7 @@ document.getElementById('send').addEventListener('click', async () => {
         if(data.error){
             throw data.error
         }
-        logger.info(`success. sign ID:${data.data[0]}`);
+        logger.info(`Encode ${uploadFileName}, tags ${tags}, sign ID:${data.data[0]}`);
         reset()
         sweetAlertSuccess(`檔案簽章成功!!\n存證ID: ${data.data[0]}`)
         const writeSettingData: writeSettingChannelDto = {
