@@ -23,6 +23,7 @@
                 <li class="" id="produce-sign">製作檔案簽章</li>
                 <li class="" id="setting-privatekey">設定企業私鑰 <i class="far fa-check-square icon-left"></i></li>
                 <li class="" id="setting-apikey">設定api key <i class="far fa-check-square icon-left"></i></li>
+                <li class="" id="setting-autoSignPath">自動簽章路徑 <i class="far fa-check-square icon-left"></i></li>
                 <li class="select-active" id="instructions">使用方式介紹</li>
             </ul>
         </div>
@@ -49,6 +50,14 @@
                 <div class="input-group mt-5">
                     <span class="input-group-text" id="inputGroup-sizing-default">標籤</span>
                     <input type="text" class="form-control" id="fileTag" aria-describedby="inputGroup-sizing-default">
+                </div>
+            </div>
+
+            <div class="row mt-3 input-group hidden" id="col-autoSignPath">
+                <label>自動簽章路徑</label>
+                <div class="">
+                    <button class="btn btn-outline-secondary" type="button" id="autoSignBtn" name="autoSignBtn">select</button>
+                    <input type="text" class="form-control" id="autoSignPath" aria-describedby="inputGroup-sizing-default" disabled>
                 </div>
             </div>
 

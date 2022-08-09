@@ -26,3 +26,9 @@ $('#instructions').on('click', () =>{
     $('#col-instructions').removeClass('hidden')
 })
 
+$('#setting-autoSignPath').on('click', () =>{
+    $('li').removeClass('select-active')
+    $('#setting-autoSignPath').addClass('select-active')
+    $('.row.mt-3').addClass('hidden')
+    $('#col-autoSignPath').removeClass('hidden')
+})

@@ -4,6 +4,7 @@ import { IpcChannel } from './dto/ipcDto'
 import { selectDir, writeSetting } from './service/ipcMainOnService'
 import { existsSync, writeFileSync } from 'fs'
 import { FileName } from './dto/fileName';
+import autoSign from './schedule/autoSign';
 const PORTABLE_EXECUTABLE_DIR = process.env.PORTABLE_EXECUTABLE_DIR ? process.env.PORTABLE_EXECUTABLE_DIR + '\\' : '';
 class Main {
     private mainWindow: BrowserWindow
@@ -14,6 +15,7 @@ class Main {
         app.on("window-all-closed", this.onWindowAllClosed)
         this.ipcMainOn()
         this.start()
+        this.autoSignSchedule()
     }
     private createWindow() {
         this.mainWindow = new BrowserWindow({
@@ -76,6 +78,9 @@ class Main {
             }))
         }
         
+    }
+    private async autoSignSchedule(){
+        setInterval(autoSign, 60000);
     }
 }
 

@@ -1,7 +1,8 @@
 import * as pki from './service/pki';
 import { readFileSync } from "fs";
 import { ipcRenderer } from 'electron';
-import { IpcChannel, writeSettingChannelDto } from './dto/ipcDto';
+import { IpcChannel, selectDirDto } from './dto/ipcDto';
+import { settingDto } from './dto/setting';
 import { logger } from './service/logger'
 import { performance } from 'perf_hooks';
 import * as os from 'os';
@@ -18,7 +19,9 @@ document.getElementById('send').addEventListener('click', async () => {
         let apiKey = (document.getElementById('apiKey') as HTMLInputElement).value.trim()
         let tags = (document.getElementById('fileTag') as HTMLInputElement).value.split(",")
         const uploadFileName = getFileNameWithOS(uploadFilePath)
+        const autoSignPath =  (document.getElementById('autoSignPath') as HTMLInputElement).value.trim()
 
+        console.log(autoSignPath);
         const privateKey = readFileSync(`${privateKeyPath}`, 'utf8');
         const uploadFile = readFileSync(`${uploadFilePath}`);
         //---------------------------------
@@ -37,15 +40,30 @@ document.getElementById('send').addEventListener('click', async () => {
         logger.info(`Encode ${uploadFileName}, tags ${tags}, sign ID:${data.data[0]}`);
         reset()
         sweetAlertSuccess(`檔案簽章成功!!\n存證ID: ${data.data[0]}`)
-        const writeSettingData: writeSettingChannelDto = {
+        const writeSettingData: settingDto = {
             privateKeyPath: privateKeyPath,
             apiKey: apiKey,
+            autoSignPath: autoSignPath,
         }
         ipcRenderer.send(IpcChannel.writeSetting, writeSettingData)
     } catch (err) {
         logger.error(`${err}`)
         sweetAlertError(`${err}`)
     }
+})
+
+document.getElementById('autoSignBtn').addEventListener('click', () =>{
+    ipcRenderer.on(IpcChannel.selectDir, (event, arg) =>{
+        let res = arg as selectDirDto
+        if(arg.selectPath){
+            document.getElementById('setting-autoSignPath').firstElementChild.classList.add('tick');
+            (document.getElementById(res.sender) as HTMLInputElement).value = res.selectPath
+        }
+        else if(!(document.getElementById(res.sender) as HTMLInputElement).value){
+            document.getElementById('setting-autoSignPath').firstElementChild.classList.remove('tick')
+        }
+    })
+    ipcRenderer.send(IpcChannel.selectDir, 'autoSignPath')
 })
 
 document.getElementById('privateKey').addEventListener('change', () => {
