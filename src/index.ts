@@ -2,7 +2,7 @@ import * as pki from './service/pki';
 import { readFileSync } from "fs";
 import { ipcRenderer } from 'electron';
 import { IpcChannel, selectDirDto } from './dto/ipcDto';
-import { settingDto } from './dto/setting';
+import { settingDto, defaultSetting } from './dto/setting';
 import { logger } from './service/logger'
 import { performance } from 'perf_hooks';
 import * as os from 'os';
@@ -41,6 +41,7 @@ document.getElementById('send').addEventListener('click', async () => {
         reset()
         sweetAlertSuccess(`檔案簽章成功!!\n存證ID: ${data.data[0]}`)
         const writeSettingData: settingDto = {
+            ...defaultSetting,
             privateKeyPath: privateKeyPath,
             apiKey: apiKey,
             autoSignPath: autoSignPath,

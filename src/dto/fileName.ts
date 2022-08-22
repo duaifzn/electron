@@ -1,3 +1,4 @@
 export enum FileName {
-    settingJson = 'setting.json'
+    settingJson = 'setting.json',
+    signed = '_signed'
 }

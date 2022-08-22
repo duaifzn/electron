@@ -1,4 +1,4 @@
-import { existsSync, readFileSync, readdirSync, unlinkSync } from "fs";
+import { existsSync, readFileSync, readdirSync, unlinkSync, copyFileSync } from "fs";
 import { FileName } from '../dto/fileName';
 import { logger } from '../service/logger';
 import { settingDto } from "../dto/setting";
@@ -26,21 +26,35 @@ export default async function autoSign() {
         logger.info(`api key is null.`);
         return
     }
-    let files = readdirSync(setting.autoSignPath);
+    let files = readdirSync(setting.autoSignPath).filter(file => {
+        let regex = new RegExp(`^((?!(${FileName.signed})).)*$`)
+        return regex.test(file)
+    });
     for await (const file of files) {
-        try{
+        try {
+            let fileName = file.split('.')[0];
+            let filenameExtension = file.split('.')[1] ? `.${file.split('.')[1]}` : "";
             let slash = osSlash();
+            if (existsSync(`${setting.autoSignPath}${slash}${fileName}${FileName.signed}${filenameExtension}`)) {
+                continue
+            }
             let buffer = readFileSync(`${setting.autoSignPath}${slash}${file}`);
             let privateKey = readFileSync(`${setting.privateKeyPath}`, 'utf8');
             let sign = pki.sign(privateKey, buffer).toString('hex');
-            let data = await sendToServer({ signature: sign, tags: [] }, setting.apiKey)
-            if(data.error){
+            let data = await sendToServer({ signature: sign, tags: [`${file}`] }, setting.apiKey)
+            if (data.error) {
                 throw data.error
             }
             logger.info(`Encode ${setting.autoSignPath}${slash}${file}, sign ID:${data.data[0]}`);
-            unlinkSync(`${setting.autoSignPath}${slash}${file}`);
-        }catch(err) {
+            copyFileSync(
+                `${setting.autoSignPath}${slash}${file}`,
+                `${setting.autoSignPath}${slash}${fileName}${FileName.signed}${filenameExtension}`);
+            if (setting.deleteAfterSigned) {
+                unlinkSync(`${setting.autoSignPath}${slash}${file}`)
+            }
+
+        } catch (err) {
             logger.error(`${err}`);
-        }  
+        }
     }
 }

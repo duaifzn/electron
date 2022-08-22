@@ -5,6 +5,7 @@ import { selectDir, writeSetting } from './service/ipcMainOnService'
 import { existsSync, writeFileSync } from 'fs'
 import { FileName } from './dto/fileName';
 import autoSign from './schedule/autoSign';
+import { defaultSetting } from './dto/setting'
 const PORTABLE_EXECUTABLE_DIR = process.env.PORTABLE_EXECUTABLE_DIR ? process.env.PORTABLE_EXECUTABLE_DIR + '\\' : '';
 class Main {
     private mainWindow: BrowserWindow
@@ -73,8 +74,7 @@ class Main {
     private start() {
         if (!existsSync(`${PORTABLE_EXECUTABLE_DIR}${FileName.settingJson}`)) {
             writeFileSync(`${PORTABLE_EXECUTABLE_DIR}${FileName.settingJson}`, JSON.stringify({
-                privateKeyPath: "",
-                apiKey: ""
+                ...defaultSetting,
             }))
         }
         
