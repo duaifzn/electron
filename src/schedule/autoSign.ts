@@ -1,4 +1,4 @@
-import { existsSync, readFileSync, readdirSync, unlinkSync, copyFileSync } from "fs";
+import { existsSync, readFileSync, readdirSync, renameSync, unlinkSync } from "fs";
 import { FileName } from '../dto/fileName';
 import { logger } from '../service/logger';
 import { settingDto } from "../dto/setting";
@@ -35,9 +35,6 @@ export default async function autoSign() {
             let fileName = file.split('.')[0];
             let filenameExtension = file.split('.')[1] ? `.${file.split('.')[1]}` : "";
             let slash = osSlash();
-            if (existsSync(`${setting.autoSignPath}${slash}${fileName}${FileName.signed}${filenameExtension}`)) {
-                continue
-            }
             let buffer = readFileSync(`${setting.autoSignPath}${slash}${file}`);
             let privateKey = readFileSync(`${setting.privateKeyPath}`, 'utf8');
             let sign = pki.sign(privateKey, buffer).toString('hex');
@@ -46,13 +43,13 @@ export default async function autoSign() {
                 throw data.error
             }
             logger.info(`Encode ${setting.autoSignPath}${slash}${file}, sign ID:${data.data[0]}`);
-            copyFileSync(
-                `${setting.autoSignPath}${slash}${file}`,
-                `${setting.autoSignPath}${slash}${fileName}${FileName.signed}${filenameExtension}`);
             if (setting.deleteAfterSigned) {
                 unlinkSync(`${setting.autoSignPath}${slash}${file}`)
+            }else{
+                renameSync(
+                    `${setting.autoSignPath}${slash}${file}`,
+                    `${setting.autoSignPath}${slash}${fileName}${FileName.signed}${filenameExtension}`);
             }
-
         } catch (err) {
             logger.error(`${err}`);
         }

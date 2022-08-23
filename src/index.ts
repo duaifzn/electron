@@ -1,5 +1,5 @@
 import * as pki from './service/pki';
-import { readFileSync } from "fs";
+import { copyFileSync, readFileSync, unlinkSync, renameSync } from "fs";
 import { ipcRenderer } from 'electron';
 import { IpcChannel, selectDirDto } from './dto/ipcDto';
 import { settingDto, defaultSetting } from './dto/setting';
@@ -8,20 +8,25 @@ import { performance } from 'perf_hooks';
 import * as os from 'os';
 import Swal from 'sweetalert2';
 import { sendToServer } from './util/request';
+import { getSetting } from './util/getSetting';
+import osSlash from "./util/osSlash";
+import { FileName } from './dto/fileName';
 
 document.getElementById('send').addEventListener('click', async () => {
     try {
         if (!inputValidate()) {
             return
         }
+        let setting = getSetting();
+        let slash = osSlash();
         const privateKeyPath = (document.getElementById('privateKey') as HTMLInputElement).files[0].path
         let uploadFilePath = (document.getElementById('uploadFile') as HTMLInputElement).files[0].path
         let apiKey = (document.getElementById('apiKey') as HTMLInputElement).value.trim()
         let tags = (document.getElementById('fileTag') as HTMLInputElement).value.split(",")
         const uploadFileName = getFileNameWithOS(uploadFilePath)
+        let fileName = uploadFileName.split('.')[0];
+        let filenameExtension = uploadFileName.split('.')[1] ? `.${uploadFileName.split('.')[1]}` : "";
         const autoSignPath =  (document.getElementById('autoSignPath') as HTMLInputElement).value.trim()
-
-        console.log(autoSignPath);
         const privateKey = readFileSync(`${privateKeyPath}`, 'utf8');
         const uploadFile = readFileSync(`${uploadFilePath}`);
         //---------------------------------
@@ -38,10 +43,19 @@ document.getElementById('send').addEventListener('click', async () => {
             throw data.error
         }
         logger.info(`Encode ${uploadFileName}, tags ${tags}, sign ID:${data.data[0]}`);
+        if (setting.deleteAfterSigned) {
+            unlinkSync(`${getFilePathWithOS(uploadFilePath)}${slash}${uploadFileName}`)
+        }
+        else{
+            renameSync(
+                `${getFilePathWithOS(uploadFilePath)}${slash}${uploadFileName}`,
+                `${getFilePathWithOS(uploadFilePath)}${slash}${fileName}${FileName.signed}${filenameExtension}`);
+        }
+        
         reset()
         sweetAlertSuccess(`檔案簽章成功!!\n存證ID: ${data.data[0]}`)
         const writeSettingData: settingDto = {
-            ...defaultSetting,
+            ...setting,
             privateKeyPath: privateKeyPath,
             apiKey: apiKey,
             autoSignPath: autoSignPath,
@@ -113,6 +127,13 @@ function getFileNameWithOS(path: string) {
     } else {
         return path.split(`/`).pop();
     }
+}
+
+function getFilePathWithOS(path: string) {
+    const slash = osSlash();
+    let pathTemp = path.split(slash);
+    pathTemp.pop();
+    return pathTemp.join(slash)
 }
 
 function sweetAlertError(msg: string) {
