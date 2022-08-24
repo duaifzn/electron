@@ -1,8 +1,8 @@
 import * as pki from './service/pki';
-import { copyFileSync, readFileSync, unlinkSync, renameSync } from "fs";
+import { readFileSync, unlinkSync, renameSync, writeFileSync } from "fs";
 import { ipcRenderer } from 'electron';
 import { IpcChannel, selectDirDto } from './dto/ipcDto';
-import { settingDto, defaultSetting } from './dto/setting';
+import { settingDto } from './dto/setting';
 import { logger } from './service/logger'
 import { performance } from 'perf_hooks';
 import * as os from 'os';
@@ -11,6 +11,18 @@ import { sendToServer } from './util/request';
 import { getSetting } from './util/getSetting';
 import osSlash from "./util/osSlash";
 import { FileName } from './dto/fileName';
+import { listComponent } from './components';
+const PORTABLE_EXECUTABLE_DIR = process.env.PORTABLE_EXECUTABLE_DIR ? process.env.PORTABLE_EXECUTABLE_DIR + '\\' : '';
+
+onload()
+function onload(){
+    let setting = getSetting();
+    setting.autoSignPath.forEach(path =>{
+        let lists = document.getElementById('autoSignPathList') as HTMLElement
+        let list = listComponent(path);
+        lists.appendChild(list);
+    });
+}
 
 document.getElementById('send').addEventListener('click', async () => {
     try {
@@ -58,7 +70,6 @@ document.getElementById('send').addEventListener('click', async () => {
             ...setting,
             privateKeyPath: privateKeyPath,
             apiKey: apiKey,
-            autoSignPath: autoSignPath,
         }
         ipcRenderer.send(IpcChannel.writeSetting, writeSettingData)
     } catch (err) {
@@ -79,6 +90,20 @@ document.getElementById('autoSignBtn').addEventListener('click', () =>{
         }
     })
     ipcRenderer.send(IpcChannel.selectDir, 'autoSignPath')
+})
+
+document.getElementById('AddAutoSignBtn').addEventListener('click', ()=>{
+    let setting = getSetting();
+    let value = (document.getElementById('autoSignPath') as HTMLInputElement).value.trim();
+    if(!value){
+        return
+    }
+    let lists = document.getElementById('autoSignPathList') as HTMLElement
+    let list = listComponent(value);
+    lists.appendChild(list);
+    setting.autoSignPath.push(value);
+    writeFileSync(`${PORTABLE_EXECUTABLE_DIR}${FileName.settingJson}`, JSON.stringify(setting));
+    (document.getElementById('autoSignPath') as HTMLInputElement).value = null;
 })
 
 document.getElementById('privateKey').addEventListener('change', () => {

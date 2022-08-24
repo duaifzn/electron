@@ -56,9 +56,15 @@
             <div class="row mt-3 input-group hidden" id="col-autoSignPath">
                 <label>自動簽章路徑</label>
                 <div class="">
-                    <button class="btn btn-outline-secondary" type="button" id="autoSignBtn" name="autoSignBtn">select</button>
+                    <button class="btn btn-outline-secondary" type="button" id="autoSignBtn" name="autoSignBtn">選擇</button>
+                    <button class="btn btn-outline-secondary" type="button" id="AddAutoSignBtn" name="AddAutoSignBtn">增加</button>
                     <input type="text" class="form-control" id="autoSignPath" aria-describedby="inputGroup-sizing-default" disabled>
                 </div>
+                <div>
+                    <ul class="list-group" id="autoSignPathList">
+                    </ul>
+                </div>
+                
             </div>
 
             <div class="row mt-3" id="col-instructions">
